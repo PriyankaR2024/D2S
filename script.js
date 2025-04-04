@@ -6,69 +6,64 @@ function toggleDriverFields() {
 
 function handleSignup(e) {
     e.preventDefault();
-  function validateSignupForm() {
-    const fullName = document.getElementById("fullName").value.trim();
+
+    const fullName = document.getElementById("name").value.trim();
     const phone = document.getElementById("phone").value.trim();
     const email = document.getElementById("email").value.trim();
     const password = document.getElementById("password").value.trim();
     const role = document.getElementById("role").value;
 
-    // Name must not be empty
+    // Name
     if (fullName === "") {
-      alert("Please enter your full name.");
-      return false;
+        alert("Please enter your full name.");
+        return false;
     }
 
-    // Phone must be 10 digits
-    const phoneRegex = /^[1-9]\d{9}$/;
+    // Phone validation (10 digits, starts with 6-9)
+    const phoneRegex = /^[6-9]\d{9}$/;
     if (!phoneRegex.test(phone)) {
-      alert("Please enter a valid 10-digit phone number.");
-      return ;
+        alert("Please enter a valid 10-digit phone number starting with 6-9.");
+        return false;
     }
 
-    // Email must be valid
-    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/;
+    // Email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      alert("Please enter a valid email address.");
-      return ;
+        alert("Please enter a valid email address.");
+        return false;
     }
 
-    // Password must be at least 6 characters
-      const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/;
-      if (!passwordRegex.test(password)) {
-      alert("Password must be at least 6 characters long.\n-one uppercase letter\n-one lowercase letter\n-one number\n-one special character");
-      return;
+    // Password (min 6 chars, includes upper, lower, digit, special)
+    const passwordRegex = /^(?=.[a-z])(?=.[A-Z])(?=.\d)(?=.[@$!%*?&]).{6,}$/;
+    if (!passwordRegex.test(password)) {
+        alert("Password must have:\n- At least 6 characters\n- One uppercase letter\n- One lowercase letter\n- One number\n- One special character");
+        return false;
     }
 
-      if(role ==='Driver'){
-           const licenseNumber = document.getElementById("licenseNumber").value.trim();
-           const vehicleType = document.getElementById("vehicleType").value.trim();
-           const vehicleNumber = document.getElementById("vehicleNumber").value.trim();
+    // Driver-specific fields
+    if (role === 'Driver') {
+        const licenseNumber = document.getElementById("licenseNumber").value.trim();
+        const vehicleType = document.getElementById("vehicleType").value.trim();
+        const vehicleNumber = document.getElementById("vehicleNumber").value.trim();
 
-          if(licenseNumber ===""){
-              alert("Please enter your license number ");
-              return ; 
-          }
+        if (licenseNumber === "") {
+            alert("Please enter your license number.");
+            return false;
+        }
+        if (vehicleType === "") {
+            alert("Please enter your vehicle type.");
+            return false;
+        }
+        if (vehicleNumber === "") {
+            alert("Please enter your vehicle number.");
+            return false;
+        }
+    }
 
-          
-          if(vehicleType===""){
-              alert("Please enter your vehicle type ");
-              return ; 
-          }
-
-          
-          if(vehicleNumber===""){
-              alert("Please enter your vehicle number ");
-              return  ; 
-          }
-      }
-    // All good
-    alert("Signup successful!");
-    return true;
-  }
-
+    // If everything is valid
     const uniqueId = 'D2S' + Math.floor(100000 + Math.random() * 900000);
     localStorage.setItem("d2s-user-id", uniqueId);
+    alert("Signup successful! Your ID: " + uniqueId);
     window.location.href = "final.html";
-    return ;
+    return true;
 }
