@@ -122,6 +122,36 @@
       </div>
     </form>
   </div>
+  <script>
+    function login() {
+      const phone = document.getElementById('phone').value.trim();
+      const password = document.getElementById('password').value.trim();
+      const role = document.getElementById('role').value;
+      const errorDiv = document.getElementById('error');
+
+      if(!phone|| !password||!role)
+      {
+        errorDiv.textContent = "All fields are mandatory ";
+        return;
+      }
+
+      if(role === 'customer')
+      {
+        window.location.href="customer_dashboard.html";
+      }
+      else if(role === 'driver')
+      {
+        window.location.href="driver_dashboard.html";
+      }
+      else if(role === 'admin')
+      {
+        window.location.href="admin_dashboard.html";
+      }
+      
+    }
+      
+      
+  </script>
 
 </body>
 </html>
