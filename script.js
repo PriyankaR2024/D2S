@@ -34,7 +34,7 @@ function handleSignup(e) {
     }
 
     // Password (min 6 chars, includes upper, lower, digit, special)
-    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{6,}$/;
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{6,}$/;
     if (!passwordRegex.test(password)) {
         alert("Password must have:\n- At least 6 characters\n- One uppercase letter\n- One lowercase letter\n- One number\n- One special character");
         return false;
