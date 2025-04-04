@@ -22,22 +22,21 @@ function handleSignup(e) {
     const phoneRegex = /^[1-9]\d{9}$/;
     if (!phoneRegex.test(phone)) {
       alert("Please enter a valid 10-digit phone number.");
-      return false;
+      return ;
     }
 
     // Email must be valid
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/;
     if (!emailRegex.test(email)) {
       alert("Please enter a valid email address.");
-      return false;
+      return ;
     }
 
     // Password must be at least 6 characters
       const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/;
-
-    if (!passwordRegex.test(password)) {
+      if (!passwordRegex.test(password)) {
       alert("Password must be at least 6 characters long.\n-one uppercase letter\n-one lowercase letter\n-one number\n-one special character");
-      return false;
+      return;
     }
 
       if(role ==='Driver'){
@@ -47,19 +46,19 @@ function handleSignup(e) {
 
           if(licenseNumber ===""){
               alert("Please enter your license number ");
-              return false ; 
+              return ; 
           }
 
           
           if(vehicleType===""){
               alert("Please enter your vehicle type ");
-              return false ; 
+              return ; 
           }
 
           
           if(vehicleNumber===""){
               alert("Please enter your vehicle number ");
-              return false ; 
+              return ; 
           }
       }
     // All good
@@ -70,5 +69,5 @@ function handleSignup(e) {
     const uniqueId = 'D2S' + Math.floor(100000 + Math.random() * 900000);
     localStorage.setItem("d2s-user-id", uniqueId);
     window.location.href = "final.html";
-    return false;
+    return ;
 }
