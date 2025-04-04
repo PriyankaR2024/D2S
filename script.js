@@ -11,6 +11,7 @@ function handleSignup(e) {
     const phone = document.getElementById("phone").value.trim();
     const email = document.getElementById("email").value.trim();
     const password = document.getElementById("password").value.trim();
+    const role = document.getElementById("role").value;
 
     // Name must not be empty
     if (fullName === "") {
@@ -58,7 +59,7 @@ function handleSignup(e) {
           
           if(vehicleNumber===""){
               alert("Please enter your vehicle number ");
-              return ; 
+              return  ; 
           }
       }
     // All good
