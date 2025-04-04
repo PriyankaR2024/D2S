@@ -19,7 +19,7 @@ function handleSignup(e) {
     }
 
     // Phone must be 10 digits
-    const phoneRegex = /^[6-9]\d{9}$/;
+    const phoneRegex = /^[1-9]\d{9}$/;
     if (!phoneRegex.test(phone)) {
       alert("Please enter a valid 10-digit phone number.");
       return false;
@@ -33,8 +33,10 @@ function handleSignup(e) {
     }
 
     // Password must be at least 6 characters
-    if (password.length < 6) {
-      alert("Password must be at least 6 characters long.");
+      const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/;
+
+    if (!passwordRegex.test(password)) {
+      alert("Password must be at least 6 characters long.\n-one uppercase letter\n-one lowercase letter\n-one number\n-one special character");
       return false;
     }
 
