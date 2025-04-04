@@ -44,3 +44,50 @@ body, html {
 .link {
     margin-top: 10px;
 }
+
+/* Styles specific to login page */
+.login-container {
+  background: white;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+}
+
+.login-container h2 {
+  font-size: 26px;
+  color: #333;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+.login-container input, 
+.login-container select, 
+.login-container button {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+}
+
+.login-container button {
+  background-color: #007BFF;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.login-container .links {
+  margin-top: 10px;
+  font-size: 14px;
+}
+
+.login-container .links a {
+  color: #007BFF;
+  text-decoration: none;
+}
+
