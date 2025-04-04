@@ -20,9 +20,9 @@ function handleSignup(e) {
     }
 
     // Phone validation (10 digits, starts with 6-9)
-    const phoneRegex = /^[6-9]\d{9}$/;
+    const phoneRegex = /^[1-9]\d{9}$/;
     if (!phoneRegex.test(phone)) {
-        alert("Please enter a valid 10-digit phone number starting with 6-9.");
+        alert("Please enter a valid 10-digit phone number starting with 1-9.");
         return false;
     }
 
