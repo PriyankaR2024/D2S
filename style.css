@@ -35,13 +35,3 @@ body, html {
     border: none;
     cursor: pointer;
 }
-.title {
-    font-size: 24px;
-    font-weight: bold;
-    margin-bottom: 20px;
-    font-family: 'Courier New', Courier, monospace;
-    color: #ff4d6d;
-}
-.link {
-    margin-top: 10px;
-}
