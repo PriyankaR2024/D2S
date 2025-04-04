@@ -40,6 +40,28 @@ function handleSignup(e) {
       return false;
     }
 
+      if(role ==='Driver'){
+           const licenseNumber = document.getElementById("licenseNumber").value.trim();
+           const vehicleType = document.getElementById("vehicleType").value.trim();
+           const vehicleNumber = document.getElementById("vehicleNumber").value.trim();
+
+          if(licenseNumber ===""){
+              alert("Please enter your license number ");
+              return false ; 
+          }
+
+          
+          if(vehicleType===""){
+              alert("Please enter your vehicle type ");
+              return false ; 
+          }
+
+          
+          if(vehicleNumber===""){
+              alert("Please enter your vehicle number ");
+              return false ; 
+          }
+      }
     // All good
     alert("Signup successful!");
     return true;
