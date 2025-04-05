@@ -7,13 +7,13 @@ const PORT = 3000;
 
 app.use(cors());
 app.use(bodyParser.json());
-app.use(body.Parser.urlencoded({extended:true}));
+app.use(bodyParser.urlencoded({extended:true}));
 
-app.get('/' ,(reg,res)=>{
+app.get('/',(reg,res)=>{
   res.send('backened is running ');
 });
 
-app.listen(PORT , () =>{
+app.listen(PORT,() =>{
   console.log("Server is running on http://localhost:${PORT}");
 });
               
