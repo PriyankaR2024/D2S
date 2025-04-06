@@ -1,41 +1,52 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Signup Test</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Signup - D2S</title>
+    <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <h2>Signup Test Form</h2>
-  <form id="signupForm">
-    <input type="text" name="username" placeholder="Username" required /><br />
-    <input type="text" name="phone" placeholder="Phone" required /><br />
-    <input type="email" name="email" placeholder="Email" required /><br />
-    <input type="password" name="password" placeholder="Password" required /><br />
-    <select name="role" required>
-      <option value="">Select Role</option>
-      <option value="Customer">Customer</option>
-      <option value="Driver">Driver</option>
-      <option value="Admin">Admin</option>
-    </select><br />
-    <div id="driver-extra" style="display: none;">
-        <input type="text" id="licenseNumber" placeholder="License Number" />
-        <input type="text" id="vehicleType" placeholder="Vehicle Type" />
-        <input type="text" id="vehicleNumber" placeholder="Vehicle Number" />
-    </div>
-    <button type="submit">Sign Up</button>
-  </form>
+    <div class="background">
+        <div class="login-box">
+            <h2 class="title">Sign Up to D2S</h2>
+            <form id="signup-form"action="/signup" method="POST" onsubmit="return handleSignup(event)">
+                <input type="text" id="username" placeholder="Full Name" required />
+                <input type="text" id="phone" placeholder="Phone Number" required />
+                <input type="email" id="email" placeholder="Email Address" required />
+                <input type="password" id="password" placeholder="Password" required />
+                <select id="role" onchange="toggleDriverFields()" required>
+                    <option value="">Select Role</option>
+                    <option value="Customer">Customer</option>
+                    <option value="Driver">Driver</option>
+                    <option value="Admin">Admin</option>
+                </select>
 
-  <div id="result"></div>
+                <div id="driver-extra" style="display: none;">
+                    <input type="text" id="licenseNumber" placeholder="License Number" />
+                    <input type="text" id="vehicleType" placeholder="Vehicle Type" />
+                    <input type="text" id="vehicleNumber" placeholder="Vehicle Number" />
+                </div>
+
+                <button type="submit">Sign Up</button>
+            </form>
+              <p class="link">
+                Already have an account? <a href="./index.html">Login</a>
+            </p>
+        </div>
+    </div>
+    
+    <div id="result"></div>
+    <script src="script.js"></script>
+
 
   <script>
-    const form = document.getElementById("signupForm");
+    const form = document.getElementById("signup-form");
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
 
       const formData = new FormData(form);
       const data = Object.fromEntries(formData);
-      const roleSelect = document.getElementById("role");
-      const driverFields = document.getElementById("driverFields");
-
 
       const res = await fetch("http://localhost:3000/signup", {
         method: "POST",
@@ -49,5 +60,7 @@
       document.getElementById("result").innerText = JSON.stringify(result, null, 2);
     });
   </script>
+          
+
 </body>
 </html>
