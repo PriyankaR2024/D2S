@@ -4,7 +4,7 @@ function toggleDriverFields() {
     driverFields.style.display = role === 'Driver' ? 'block' : 'none';
 }
 
-function handleSignup(e) {
+async function handleSignup(e) {
     e.preventDefault();
 
     const fullName = document.getElementById("name").value.trim();
@@ -19,7 +19,7 @@ function handleSignup(e) {
         return false;
     }
 
-    // Phone validation (10 digits, starts with 6-9)
+    // Phone validation (10 digits, starts with 1-9)
     const phoneRegex = /^[1-9]\d{9}$/;
     if (!phoneRegex.test(phone)) {
         alert("Please enter a valid 10-digit phone number starting with 1-9.");
@@ -33,18 +33,22 @@ function handleSignup(e) {
         return false;
     }
 
-    // Password (min 6 chars, includes upper, lower, digit, special)
-    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{6,}$/;
+    // Password
+    const passwordRegex = /^(?=.[a-z])(?=.[A-Z])(?=.\d)(?=.[\W_]).{6,}$/;
     if (!passwordRegex.test(password)) {
         alert("Password must have:\n- At least 6 characters\n- One uppercase letter\n- One lowercase letter\n- One number\n- One special character");
         return false;
     }
 
-    // Driver-specific fields
+    // Declare outside
+    let licenseNumber = "";
+    let vehicleType = "";
+    let vehicleNumber = "";
+
     if (role === 'Driver') {
-        const licenseNumber = document.getElementById("licenseNumber").value.trim();
-        const vehicleType = document.getElementById("vehicleType").value.trim();
-        const vehicleNumber = document.getElementById("vehicleNumber").value.trim();
+        licenseNumber = document.getElementById("licenseNumber").value.trim();
+        vehicleType = document.getElementById("vehicleType").value.trim();
+        vehicleNumber = document.getElementById("vehicleNumber").value.trim();
 
         if (licenseNumber === "") {
             alert("Please enter your license number.");
@@ -60,10 +64,37 @@ function handleSignup(e) {
         }
     }
 
-    // If everything is valid
     const uniqueId = 'D2S' + Math.floor(100000 + Math.random() * 900000);
-    localStorage.setItem("d2s-user-id", uniqueId);
-    alert("Signup successful! Your ID: " + uniqueId);
-    window.location.href = "final.html";
-    return true;
+
+    const formData = {
+        id: uniqueId,
+        username: fullName,
+        phone,
+        email,
+        password,
+        role,
+        licenseNumber,
+        vehicleType,
+        vehicleNumber
+    };
+
+    try {
+        const res = await fetch("http://localhost:3000/signup", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(formData)
+        });
+
+        const result = await res.json();
+        console.log(result);
+
+        alert("Signup successful! Your ID: " + result.user.id);
+        window.localStorage.setItem("d2s-user-id", result.user.id);
+        window.location.href = "final.html";
+    } catch (error) {
+        console.error("Signup failed:", error);
+        alert("Something went wrong. Please try again.");
+    }
 }
