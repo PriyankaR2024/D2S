@@ -7,7 +7,7 @@ function toggleDriverFields() {
 async function handleSignup(e) {
     e.preventDefault();
 
-    const fullName = document.getElementById("name").value.trim();
+    const fullName = document.getElementById("username").value.trim();
     const phone = document.getElementById("phone").value.trim();
     const email = document.getElementById("email").value.trim();
     const password = document.getElementById("password").value.trim();
@@ -40,7 +40,7 @@ async function handleSignup(e) {
         return false;
     }
 
-    // Declare outside
+    // Driver-specific fields
     let licenseNumber = "";
     let vehicleType = "";
     let vehicleNumber = "";
@@ -90,8 +90,8 @@ async function handleSignup(e) {
         const result = await res.json();
         console.log(result);
 
-        alert("Signup successful! Your ID: " + result.user.id);
-        window.localStorage.setItem("d2s-user-id", result.user.id);
+        alert("Signup successful! Your ID: " + result.userId);
+        window.localStorage.setItem("d2s-user-id", result.userId);
         window.location.href = "final.html";
     } catch (error) {
         console.error("Signup failed:", error);
