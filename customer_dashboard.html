@@ -1,4 +1,3 @@
-<!-- customer_dashboard.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -21,6 +20,8 @@
       border-radius: 15px;
       box-shadow: 0 0 15px rgba(0,0,0,0.2);
       text-align: center;
+      max-width: 600px;
+      width: 90%;
     }
     .dashboard h2 {
       margin-bottom: 20px;
@@ -43,11 +44,13 @@
 <body>
   <div class="dashboard">
     <h2>Welcome, Customer</h2>
+    
     <div class="tabs">
-      <button onclick="location.href='book.html'">Book</button>
-      <button onclick="location.href='check_status.html'">Check Status</button>
-      <button onclick="location.href='do_payment.html'">Do Payment</button>
+      <button onclick="location.href='booking.html'">Book</button>
+      <button onclick="location.href='customer_check_status.html'">Check Status</button>
       <button onclick="location.href='check_history.html'">Check History</button>
+      <button onclick="location.href='view_profile.html'">View Profile</button>
+      <button onclick="window.location.href='logout.html'">Logout</button>
     </div>
   </div>
 </body>
