@@ -93,65 +93,98 @@
 
   <div class="login-box">
     <h2>Welcome to D2S</h2>
-    <form action="dashboard.html" method="POST">
+    <form id="login-form"  method="POST">
       <div class="form-group">
         <label for="phone">Phone Number</label>
         <input type="tel" id="phone" name="phone" required>
       </div>
-
+    
       <div class="form-group">
         <label for="password">Password</label>
         <input type="password" id="password" name="password" required>
       </div>
-
+    
       <div class="form-group">
         <label for="role">Select Role</label>
         <select id="role" name="role" required>
           <option value="">-- Select --</option>
-          <option value="customer">Customer</option>
-          <option value="driver">Driver</option>
-          <option value="admin">Admin</option>
+          <option value="Customer">Customer</option>
+          <option value="Driver">Driver</option>
+          <option value="Admin">Admin</option>
         </select>
       </div>
-
+    
       <button type="submit">Login</button>
-
+    
       <div class="link-group">
         <p>Don't have an account? <a href="signup.html">Sign Up</a></p>
-        <p><a href="forgot-password.html">Forgot Password?</a></p>
+        <p><a href="forgotpassword.html">Forgot Password?</a></p>
       </div>
+    
+      <p id="error" style="color: red; text-align: center; margin-top: 10px;"></p>
     </form>
-  </div>
-  <script>
-    function login() {
-      const phone = document.getElementById('phone').value.trim();
-      const password = document.getElementById('password').value.trim();
-      const role = document.getElementById('role').value;
-      const errorDiv = document.getElementById('error');
+    
 
-      if(!phone|| !password||!role)
-      {
-        errorDiv.textContent = "All fields are mandatory ";
+    
+  </div>
+
+  <script>
+    document.getElementById("login-form").addEventListener("submit", async function (e) {
+      e.preventDefault();
+  
+      const phone = document.getElementById("phone").value.trim();
+      const password = document.getElementById("password").value.trim();
+      const role = document.getElementById("role").value;
+      const errorDiv = document.getElementById("error");
+  
+      const userId = localStorage.getItem("userId");
+
+      if (!phone || !password || !role) {
+        errorDiv.textContent = "All fields are mandatory.";
         return;
       }
+  
+  
+        try {
+        const response = await fetch("http://localhost:3000/login", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ phone, password, role })
+        });
+  
 
-      if(role === 'customer')
-      {
-        window.location.href="customer_dashboard.html";
+        const result = await response.json();
+  
+        if (result.success){
+          localStorage.setItem("userId", result.userId);
+          localStorage.setItem("role", result.role); 
+
+          window.location.href=result.redirectUrl;
+        }
+        else{
+          let message = "Login failed";
+  
+        if (result.error === "not_registered") {
+          message = "User not found. Please sign up.";
+        } else if (result.error === "invalid_password") {
+          message = "Password incorrect.";
+        } else if (result.error === "wrong_role") {
+          message = "Role mismatch. Please check your role selection.";
+        }
+  
+        errorDiv.textContent = message;
+        }
+
+      } catch (err) {
+        console.error("Error during login:", err);
+        errorDiv.textContent = "Server error. Please try again.";
       }
-      else if(role === 'driver')
-      {
-        window.location.href="driver_dashboard.html";
-      }
-      else if(role === 'admin')
-      {
-        window.location.href="admin_dashboard.html";
-      }
-      
-    }
-      
-      
+    });
   </script>
+  
+  
 
 </body>
 </html>
