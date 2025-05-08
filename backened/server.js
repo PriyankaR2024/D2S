@@ -1,79 +1,159 @@
-const fs = require('fs');
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const path = require('path');
+const mongoose = require('mongoose');
 
 const app = express();
 const PORT = 3000;
 
+// Middleware
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname, '../')));
 
-// Serve static frontend files (like signup.html)
-app.use(express.static(path.join(__dirname, '..')));
+// MongoDB Atlas URI
+const mongoURI = "mongodb+srv://pbangarirawat:Pbangarirawat%40Atlas@cluster0.dwbvl7m.mongodb.net/d2s_db?retryWrites=true&w=majority&appName=Cluster0";
 
-const USERS_FILE = path.join(__dirname, 'users.json');
+// Connect to MongoDB
+mongoose.connect(mongoURI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+}).then(() => console.log("Connected to MongoDB Atlas!"))
+  .catch(err => console.error("Error connecting to MongoDB:", err));
 
-// === GET Route for Home ===
-app.get('/', (req, res) => {
-  res.send('D2S backend is live!');
-});
+// User model
+const userSchema = new mongoose.Schema({
+  userId: { type: String, required: true, unique: true },
+  username: String,
+  phone: String,
+  email: String,
+  password: String,
+  role: String,
+  licenseNumber: String,
+  vehicleType: String,
+  vehicleNumber: String
+}, { versionKey: false });
 
-// === GET Route for Signup (for testing in browser) ===
-app.get('/signup', (req, res) => {
-  res.send('Signup route is active. Please use a POST request through the form.');
-});
+const User = mongoose.models.User || mongoose.model('User', userSchema);
 
-// === POST Route for Signup Form ===
-app.post('/signup', (req, res) => {
+// Signup Route
+app.post('/signup', async (req, res) => {
   const { username, phone, email, password, role, licenseNumber, vehicleType, vehicleNumber } = req.body;
 
-  const newUser = {
-    id: `d2s-${Math.floor(Math.random() * 10000)}`,
-    username,
-    phone,
-    email,
-    password,
-    role
-  };
-
-  if (role === "Driver") {
-    newUser.licenseNumber = licenseNumber;
-    newUser.vehicleType = vehicleType;
-    newUser.vehicleNumber = vehicleNumber;
-  }
-
-  fs.readFile(USERS_FILE, 'utf8', (err, data) => {
-    let existingUsers = [];
-
-    if (!err && data) {
-      try {
-        existingUsers = JSON.parse(data);
-      } catch (parseErr) {
-        console.error('Error parsing users.json:', parseErr);
-      }
+  try {
+    const existing = await User.findOne({ phone });
+    if (existing) {
+      return res.status(400).json({ message: 'User already exists.' });
     }
 
-    existingUsers.push(newUser);
+    let uniqueId;
+    let exists = true;
+    while (exists) {
+      uniqueId = 'd2s-' + Math.floor(1000 + Math.random() * 9000);
+      exists = await User.findOne({ userId: uniqueId });
+    }
 
-    fs.writeFile(USERS_FILE, JSON.stringify(existingUsers, null, 2), (writeErr) => {
-      if (writeErr) {
-        console.error('Error writing to file:', writeErr);
-        return res.status(500).json({ message: 'Signup failed, please try again.' });
-      }
+    const newUser = {
+      userId: uniqueId,
+      username,
+      phone,
+      email,
+      password,
+      role,
+      licenseNumber: role === "Driver" ? licenseNumber : "",
+      vehicleType: role === "Driver" ? vehicleType : "",
+      vehicleNumber: role === "Driver" ? vehicleNumber : ""
+    };
 
-      console.log("New user saved:", newUser);
-      res.json({
-        message: "Signup successful",
-        userId: newUser.id
-      });
+    await User.create(newUser);
+    res.status(201).json({
+      success: true,
+      message: "Signup successful",
+      userId: uniqueId,
+      role: role
     });
-  });
+    
+
+    //  res.json({ message: "Signup successful", userId: uniqueId });
+
+  } catch (err) {
+    console.error("Signup Error:", err);
+    res.status(500).json({ message: "Signup failed" });
+  }
 });
 
-// === Start the Server ===
+
+// Login Route
+app.post('/login', async (req, res) => {
+  const { phone, password, role } = req.body;
+
+  try {
+    const user = await User.findOne({ phone });
+
+    if (!user) {
+      return res.json({ success: false, error: "not_registered" });
+    }
+
+    if (user.password.trim() !== password.trim()) {
+      return res.json({ success: false, error: "invalid_password" });
+    }
+
+    if (user.role !== role) {
+      return res.json({ success: false, error: "wrong_role" });
+    }
+
+    let redirectUrl = '';
+    if (role === 'Customer') redirectUrl = '/customer_dashboard.html';
+    else if (role === 'Driver') redirectUrl = '/driver_dashboard.html';
+    else if (role === 'Admin') redirectUrl = '/admin_dashboard.html';
+
+    return res.json({ success: true, redirectUrl, userId: user.userId ,role: user.role });
+
+  } catch (err) {
+    console.error("Login Error:", err);
+    res.status(500).json({ message: "Login failed" });
+  }
+});
+
+
+
+// Booking & History Routes
+//const bookingRoutes = require('./routes/bookingRoutes');
+//app.use('/api', bookingRoutes);
+
+
+// app.js
+const bookingRoutes = require('./routes/bookingRoutes');
+app.use('/api/bookings', bookingRoutes);
+
+
+const historyRoutes = require('./routes/historyRoutes');
+app.use('/api/history', historyRoutes);
+
+const profileRoutes = require('./routes/profileRoutes');
+app.use('/api', profileRoutes);
+
+const paymentRoutes = require('./routes/paymentRoutes');
+app.use('/api/payment', paymentRoutes);
+
+const forgotPasswordRoute = require('./routes/forgotpasswordRoutes');
+app.use('/api', forgotPasswordRoute);
+
+
+// Serve index.html
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "../d2s/index.html"));
+});
+
+const adminRoutes = require('./routes/adminRoutes'); // path as per your folder
+app.use('/api/admin', adminRoutes);
+
+
+
+
+// Start Server
 app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+  console.log(`Server running at http://localhost:${PORT}`);
 });
